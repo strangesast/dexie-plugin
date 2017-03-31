@@ -24,12 +24,6 @@ export class GitDexie extends Dexie {
 
     this.elements.mapToClass(Element);
 
-    this.elements.gitAdd = gitAdd;
-    this.elements.gitStatus = gitStatus;
-    this.elements.gitDiffIndex = gitDiffIndex;
-    this.elements.gitDiffFiles = gitDiffFiles;
-    this.elements.gitDiffTree = gitDiffTree;
-
     let repo = {};
 
     gitIndexedDb(repo, 'test');
@@ -37,53 +31,59 @@ export class GitDexie extends Dexie {
     gitCreateTree(repo);
     gitFormats(repo);
 
-    this.repo = repo; } }
-
-function initialize() {
-  // create new project space
-}
-
-async function gitAdd(...objects) {
-  for (let object of objects) {
-    //await this.where({ id: object.id, state: 1 }).modify({ state: 0 });
-    await this.update(object.pk, { state: 1 });
+    this.repo = repo;
   }
-  // add file to the index
-}
 
-async function gitStatus() {
-  // return status of index
-  // compare index to HEAD
-  // compare work tree to index
-  // X        Y
-  // ''       [MD]  '' not updated 
-  // M       [ MD]  updated in index
-  // A       [ MD]  added to index
-  // D        [ M]  deleted from index
-  // R       [ MD]  renamed in index
-  // C       [ MD]  copied in index
-  // [MARC]         index and work tree matches
-  // [ MARC]  M     work tree changed since index
-  // [ MARC]  D     deleted in work tree
-  console.log(await this.gitDiffFiles())
-}
-
-async function gitDiffIndex(hash, cached=true) {
-  // cached? compares the tree<hash> and index
-  // else compare the work tree and the index
-}
-
-async function gitDiffTree(hash1, hash2) {
-  // compare the two trees
-}
-
-async function gitDiffFiles() {
-  // compare the index the work tree
-  let index = await this.where('state').equals(1).toArray();
-  let work =  await this.where('state').equals(0).toArray();
-
-  console.log('i', index, 'w', work);
-}
-
-async function gitCommit() {
+  initialize() {
+    // create new project space
+  }
+  
+  async gitAdd(...objects) {
+    for (let object of objects) {
+      //await this.elements.where({ id: object.id, state: 1 }).modify({ state: 0 });
+      await this.elements.update(object.pk, { state: 1 });
+    }
+    // add file to the index
+  }
+  
+  async gitStatus() {
+    // return status of index
+    // compare index to HEAD
+    // compare work tree to index
+    // X        Y
+    // ''       [MD]  '' not updated 
+    // M       [ MD]  updated in index
+    // A       [ MD]  added to index
+    // D        [ M]  deleted from index
+    // R       [ MD]  renamed in index
+    // C       [ MD]  copied in index
+    // [MARC]         index and work tree matches
+    // [ MARC]  M     work tree changed since index
+    // [ MARC]  D     deleted in work tree
+    console.log(await this.gitDiffFiles())
+  }
+  
+  async gitDiffIndex(hash, cached=true) {
+    // cached? compares the tree<hash> and index
+    // else compare the work tree and the index
+  }
+  
+  async gitDiffTree(hash1, hash2) {
+    // compare the two trees
+  }
+  
+  async gitDiffFiles() {
+    // compare the index the work tree
+    let index = await this.elements.where('state').equals(1).toArray();
+    let work =  await this.elements.where('state').equals(0).toArray();
+  
+    console.log('i', index, 'w', work);
+  }
+  
+  async gitCommit() {
+    let repo = this.repo;
+    let index = await this.elements.where('state').equals(1).toArray();
+  
+    console.log('to be committed', index);
+  }
 }

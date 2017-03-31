@@ -12,13 +12,13 @@ describe('init repo', () => {
 
     await db.elements.add(element);
 
-    await db.elements.gitAdd(element);
+    await db.gitAdd(element);
 
     element.name = 'toast toast';
     element.state = 0;
     element.updateHash();
     await db.elements.add(element);
 
-    console.log('staged', await db.elements.gitStatus());
+    console.log('staged', await db.gitStatus());
   });
 });
